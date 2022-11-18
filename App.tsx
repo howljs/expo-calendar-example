@@ -1,18 +1,66 @@
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react";
 
-export default function App() {
+import {
+  createDrawerNavigator,
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+  DrawerItem,
+} from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
+import Calendar from "./Calendar";
+
+const Drawer = createDrawerNavigator();
+
+function CustomDrawerContent(props: DrawerContentComponentProps) {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <DrawerContentScrollView {...props}>
+      <DrawerItem
+        label="DayView"
+        onPress={() => {
+          props.navigation.navigate("Calendar", { viewMode: "day" });
+        }}
+      />
+      <DrawerItem
+        label="3-days"
+        onPress={() => {
+          props.navigation.navigate("Calendar", { viewMode: "threeDays" });
+        }}
+      />
+      <DrawerItem
+        label="Week"
+        onPress={() => {
+          props.navigation.navigate("Calendar", { viewMode: "week" });
+        }}
+      />
+      <DrawerItem
+        label="Work Week"
+        onPress={() => {
+          props.navigation.navigate("Calendar", { viewMode: "workWeek" });
+        }}
+      />
+    </DrawerContentScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const _renderDrawerContent = (props: DrawerContentComponentProps) => (
+    <CustomDrawerContent {...props} />
+  );
+
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator
+        initialRouteName="Calendar"
+        useLegacyImplementation
+        drawerContent={_renderDrawerContent}
+        screenOptions={{ drawerType: "front" }}
+      >
+        <Drawer.Screen
+          name="Calendar"
+          component={Calendar}
+          options={{ title: "Calendar" }}
+        />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
